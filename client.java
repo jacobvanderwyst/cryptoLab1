@@ -41,7 +41,7 @@ class client {
             // receive from the server
             str1 = br.readLine();
   
-            System.out.println(str1);
+            System.out.println("Server: "+str1);
         }
   
         // close connection.

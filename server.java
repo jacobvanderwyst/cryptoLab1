@@ -42,7 +42,7 @@ class server {
 
 			// read from client
 			while ((str = br.readLine()) != null) {
-				System.out.println(str);
+				System.out.println("Client: "+str);
 				str1 = kb.readLine();
 
 				// send to client
