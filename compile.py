@@ -2,6 +2,8 @@ import os
 
 path="/var/www/html/"
 filename="server"
+os.system("sudo rm -rf /var/www/html/cryptoLab1")
+os.system("git clone https://github.com/jacobvanderwyst/cryptoLab1.git")
 os.system(f"javac -d . {path}cryptoLab1/{filename}.java")
 os.system(f"jar cvf {path}cryptoLab1/{filename}.jar {path}cryptoLab1/{filename}.class")
 os.system(f"echo \"Main-Class: {filename}\" > MANIFEST.MF")
