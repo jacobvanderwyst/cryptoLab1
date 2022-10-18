@@ -12,7 +12,7 @@ class server {
 
 		// Create server Socket
 		ServerSocket ss = new ServerSocket(4000);
-
+		System.out.println("Server started on 4000");
 		// connect it to client socket
 		Socket s = ss.accept();
 		System.out.println("Connection established");
