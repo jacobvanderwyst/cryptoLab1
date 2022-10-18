@@ -43,11 +43,14 @@ class server {
 			// read from client
 			ps.println("server says \"hello world\"");
 			while ((str = br.readLine()) != null) {
+				System.out.println("Message received");
 				System.out.println("Client: "+str);
 				str1 = kb.readLine();
 
+
 				// send to client
 				ps.println(str1);
+				System.out.println("Message \"" + str1 + "\" sent");
 			}
 
 			// close connection
