@@ -46,7 +46,7 @@ class server {
 				System.out.println("Message received");
 				System.out.println("Client: "+str);
 				str1 = kb.readLine();
-
+				ps.println("ayo");
 
 				// send to client
 				ps.println(str1);
