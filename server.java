@@ -41,6 +41,7 @@ class server {
 			// does not send a null string
 
 			// read from client
+			ps.println("server says \"hello world\"");
 			while ((str = br.readLine()) != null) {
 				System.out.println("Client: "+str);
 				str1 = kb.readLine();
