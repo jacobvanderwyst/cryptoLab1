@@ -34,10 +34,11 @@ class client {
         // repeat as long as exit
         // is not typed at client
         while (!(str = kb.readLine()).equals("exit")) {
-  
-            // send to the server
-            dos.writeBytes(str + "\n");
-  
+            if((str = br.readLine()) != "" || (str = br.readLine()) !=null){
+                // send to the server
+                dos.writeBytes(str + "\n");
+                System.out.println("sent to server, waiting for reply...");
+            }
             // receive from the server
             str1 = br.readLine();
   
