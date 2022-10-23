@@ -33,6 +33,7 @@ class server {
 				new InputStreamReader(System.in));
 
 		// server executes continuously
+		ps.println("server says \"hello world\"");
 		while (true) {
 
 			String str, str1;
@@ -41,16 +42,26 @@ class server {
 			// does not send a null string
 
 			// read from client
-			ps.println("server says \"hello world\"");
+			
 			while ((str = br.readLine()) != null) {
-				System.out.println("Message received");
-				System.out.println("Client: "+str);
-				str1 = kb.readLine();
-				ps.println("ayo");
-
-				// send to client
-				ps.println(str1);
-				System.out.println("Message \"" + str1 + "\" sent");
+				if((str = br.readLine()) != ""){
+					System.out.println("Message received");
+					System.out.println("Client: "+str);
+					str1 = kb.readLine();
+					ps.println("ayo");
+	
+					// send to client
+					ps.println(str1);
+					System.out.println("Message \"" + str1 + "\" sent\nWaiting for client message...");
+				}else{
+					// close connection
+					ps.close();
+					br.close();
+					kb.close();
+					ss.close();
+					s.close();
+					System.exit(1); //empty message
+				}
 			}
 
 			// close connection

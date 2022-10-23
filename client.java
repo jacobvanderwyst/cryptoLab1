@@ -10,7 +10,7 @@ class client {
     public static void main(String args[])
         throws Exception
     {
-  
+        //44.208.139.146
         // Create client socket
         Socket s = new Socket("44.208.139.146", 4000);
   
