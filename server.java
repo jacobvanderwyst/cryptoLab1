@@ -80,7 +80,7 @@ class server extends makeServerSockets {
 		sock.cSocket();
 
 		while(((sock.ssState(ss)[1].equals("bound"))&&(sock.ssState(ss)[0].equals("connected")))==true) {
-			
+			System.out.println("1");
 		}
 	}
 }
