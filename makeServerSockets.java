@@ -17,7 +17,7 @@ public class makeServerSockets{
 	//sockets
 	public ServerSocket cSSocket()throws IOException{//return instance of ServerSocket for server socket
 		ss=new ServerSocket(4000);
-		System.out.println("Server started on port "+ss.getLocalSocketAddress()+":" + ss.getLocalPort());
+		System.out.println("Server started on port "+ss.getLocalSocketAddress());
 		return ss;
 	}
 	public Socket cSocket() throws IOException{//return instance of Socket instance from client
