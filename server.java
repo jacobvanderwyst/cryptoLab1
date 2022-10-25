@@ -3,14 +3,13 @@
 
 import java.io.*;
 import java.net.*;
+import java.lang.*;
 
-class server {
+class server extends makeServerSockets {
 
-	public static void main(String args[])
-		throws Exception
+	public static void main(String args[]) throws Exception
 	{
-
-		// Create server Socket
+		/*  Create server Socket
 		ServerSocket ss = new ServerSocket(4000);
 		System.out.println("Server started on 4000");
 		// connect it to client socket
@@ -35,7 +34,7 @@ class server {
 		// server executes continuously
 		ps.println("server says \"hello world\"");
 		while (true) {
-
+		
 			String str, str1;
 
 			// repeat as long as the client
@@ -74,6 +73,14 @@ class server {
 			// terminate application
 			System.exit(0);
 
-		} // end of while
+		} // end of while */
+		//server creation
+		makeServerSockets sock= new makeServerSockets();
+		ServerSocket ss=sock.cSSocket();
+		sock.cSocket();
+
+		while(((sock.ssState(ss)[1].equals("bound"))&&(sock.ssState(ss)[0].equals("connected")))==true) {
+			
+		}
 	}
 }

@@ -33,6 +33,7 @@ class client {
   
         // repeat as long as exit
         // is not typed at client
+        System.out.println("Send a message to the server");
         while (!(str = kb.readLine()).equals("exit")) {
             if((str = br.readLine()) != "" || (str = br.readLine()) !=null){
                 // send to the server
