@@ -3,6 +3,9 @@ import os
 path="/var/www/html/"
 filename="server"
 os.system("sudo rm -rf /var/www/html/cryptoLab1")
+os.system("sudo rm -f {path}server.jar")
+os.system("sudo rm -f {path}MANIFEST.MF")
+os.system("sudo rm -f {path}sources.txt")
 os.system("cd /var/www/html && git clone https://github.com/jacobvanderwyst/cryptoLab1.git")
 os.system("find -name \"*.java\" > sources.txt")
 os.system(f"javac @sources.txt")
