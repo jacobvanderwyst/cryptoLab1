@@ -75,7 +75,7 @@ public class server extends makeServerSockets{
 		} // end of while */
 		//server creation
 		makeServerSockets socks= new makeServerSockets();
-		ServerSocket[] ss=socks.setSS();
+		ServerSocket[] ssArr=socks.setSS();
 		acceptThread act=new acceptThread();
 		
 		act.start(); //client accepted

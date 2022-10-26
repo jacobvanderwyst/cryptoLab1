@@ -19,24 +19,26 @@ public class makeServerSockets{
 		ServerSocket[] mSS=new ServerSocket[10];
 		ServerSocket sSock=null;
 		while(i<10){
-			sSock=new ServerSocket(4000+i);
-			mSS[i]=sSock;
-			i++;
-			System.out.println("Server started on "+sSock.getLocalSocketAddress());
-		}
-		
-		return mSS;
+				sSock=new ServerSocket(4000+i);
+				mSS[i]=sSock;
+				i++;
+				System.out.println("Server started on "+sSock.getLocalSocketAddress());
+			}
+			return mSS;
 	}
+	
 	public static ServerSocket getSS(ServerSocket[] socks, int snum){//return instance of ServerSocket for server socket
 		return socks[snum];
 	}
 	public Socket cSocket() throws IOException{//return instance of Socket instance from client
 		try{
-			s=ss.accept();
+			if(ss.getInetAddress()!=null){
+				s=ss.accept();
+				System.out.println("Client "+s.getInetAddress()+":"+s.getPort()+" connected");
+			}
 		}catch (Exception e){
-			System.out.println("Error: "+e);
+			//System.out.println("Error: "+e);
 		}
-		System.out.println("Client "+s.getInetAddress()+":"+s.getPort()+" connected");
 		return s;
 	}
 	//output to client
