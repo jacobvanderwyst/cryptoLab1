@@ -5,8 +5,7 @@ import java.io.*;
 import java.net.*;
 import java.lang.*;
 
-class server extends makeServerSockets {
-
+public class server extends makeServerSockets{
 	public static void main(String args[]) throws Exception
 	{
 		/*  Create server Socket
@@ -75,12 +74,13 @@ class server extends makeServerSockets {
 
 		} // end of while */
 		//server creation
-		makeServerSockets sock= new makeServerSockets();
-		ServerSocket ss=sock.cSSocket();
-		sock.cSocket();
-
-		while(((sock.ssState(ss)[1].equals("bound"))&&(sock.ssState(ss)[0].equals("connected")))==true) {
-			System.out.println("1");
-		}
+		makeServerSockets socks= new makeServerSockets();
+		ServerSocket[] ss=socks.setSS();
+		acceptThread act=new acceptThread();
+		
+		act.start(); //client accepted
+		
+		
+		
 	}
 }

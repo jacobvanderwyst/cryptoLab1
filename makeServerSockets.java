@@ -5,30 +5,37 @@ public class makeServerSockets{
 	// Create server Socket
 	private ServerSocket ss = null;
 	// connect it to client socket
-	private Socket s = null;
+	private static Socket s = null;
 	// to send data to the client
 	private PrintStream ps=null;
 	// to read data coming from the client
-	private BufferedReader br= null;
+	private static BufferedReader br= null;
 	// to read data from the keyboard
 	private BufferedReader kb=null;
-	private Thread thr=null;
 
 	//sockets
-	public ServerSocket cSSocket()throws IOException{//return instance of ServerSocket for server socket
-		ss=new ServerSocket(4000);
-		System.out.println("Server started on "+ss.getLocalSocketAddress());
-		return ss;
+	public ServerSocket[] setSS() throws IOException{
+		int i=0;
+		ServerSocket[] mSS=new ServerSocket[10];
+		ServerSocket sSock=null;
+		while(i<10){
+			sSock=new ServerSocket(4000+i);
+			mSS[i]=sSock;
+			i++;
+			System.out.println("Server started on "+sSock.getLocalSocketAddress());
+		}
+		
+		return mSS;
+	}
+	public static ServerSocket getSS(ServerSocket[] socks, int snum){//return instance of ServerSocket for server socket
+		return socks[snum];
 	}
 	public Socket cSocket() throws IOException{//return instance of Socket instance from client
 		try{
-			thr=new Thread();
 			s=ss.accept();
 		}catch (Exception e){
 			System.out.println("Error: "+e);
 		}
-		
-
 		System.out.println("Client "+s.getInetAddress()+":"+s.getPort()+" connected");
 		return s;
 	}
@@ -52,7 +59,7 @@ public class makeServerSockets{
 		br=new BufferedReader(new InputStreamReader(s.getInputStream()));
 		return br;
 	}
-	public String[] ssState(ServerSocket ss) throws SocketException{// 0 connection, 1 bind, 2 buffer
+	public static String[] ssState(ServerSocket ss) throws SocketException{// 0 connection, 1 bind, 2 buffer
 		String[] state=new String[3];
 
 		if(ss.isClosed()==true){
@@ -69,5 +76,6 @@ public class makeServerSockets{
 		
 		return state;
 	}
+
 	
 }
