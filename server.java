@@ -19,7 +19,6 @@ public class server {
 		// load credentials into memory
 		while(kb.hasNextLine()){
 			String[] cred=kb.nextLine().split(" ");
-			System.out.println(kb.nextLine()+" 1");
 			String user=cred[0];
 			String password=cred[1];
 			clientOp thisClient= new clientOp(null, null, null, null, user, password);
