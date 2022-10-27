@@ -47,7 +47,7 @@ public class clientOp implements Runnable{
 					if(ops.name.equals(destination)){
 						System.out.println("a");
 						readOut.println(this.name+": "+sendThis);
-						break;
+						//break;
 					}else if(destination==""){
 						System.out.println("b");
 						readOut.println(this.name+": "+sendThis);
