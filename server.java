@@ -32,7 +32,7 @@ public class server {
 			System.out.println("Client: "+clientNum+" connected");
 
 			arr.add(thisClient);
-			System.out.println("this client"+thisClient);
+			
 			thr.start();
 
 			clientNum++;
