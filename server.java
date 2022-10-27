@@ -18,8 +18,10 @@ public class server {
 		
 		// load credentials into memory
 		while(kb.hasNextLine()){
-			String user=kb.next();
-			String password=kb.next();
+			String[] cred=kb.nextLine().split(" ");
+			System.out.println(kb.nextLine()+" 1");
+			String user=cred[0];
+			String password=cred[1];
 			clientOp thisClient= new clientOp(null, null, null, null, user, password);
 			arr.add(thisClient);
 		}
@@ -41,20 +43,23 @@ public class server {
 			//validate credentials
 			for(clientOp op:arr){
 				System.out.println(op.user+" "+op.password);
-				System.out.println("password");
+				//System.out.println("password");
 			}
-			System.out.println("passed print arr");
+			//System.out.println("passed print arr");
+			boolean pass=false;
 			for(clientOp ops:arr){
 				if(ops.password.equals(password)){
-					System.out.println(ops.password);
-					readOut.println("Connection established");
-					System.out.println("Client "+user+" connected");
-				}else{
-					System.out.println("Client "+user+" rejected for incorrect password");
-					s.close();
+					pass=true;
 				}
 			}
-			
+			if(pass==true){
+				readOut.println("Connection established");
+				System.out.println("Client "+user+" connected");
+			}else{
+				System.out.println("Client "+user+" rejected for incorrect password");
+				s.close();
+			}
+
 			// creates thread for each user
 			clientOp thisClient= new clientOp(s,user, readIn, readOut, user, password);
 			Thread thr= new Thread(thisClient);
@@ -67,7 +72,7 @@ public class server {
 			clientNum++;
 			
 			//send message
-			Thread sendMessage=new Thread(new Runnable(){
+			/*Thread sendMessage=new Thread(new Runnable(){
 				@Override
 				public void run() {
 					boolean cont=true;
@@ -82,9 +87,9 @@ public class server {
 						}
 					}
 				}
-			});
+			});*/
 			//read message
-			Thread readMessage=new Thread(new Runnable(){
+			/*Thread readMessage=new Thread(new Runnable(){
 				@Override
 				public void run(){
 					boolean cont=true;
@@ -107,7 +112,7 @@ public class server {
 				}
 			});
 			sendMessage.start();
-			readMessage.start();
+			readMessage.start();*/
 		}
 		out.close();
 		ss.close();

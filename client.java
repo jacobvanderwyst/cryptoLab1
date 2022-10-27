@@ -46,6 +46,10 @@ public class client {
                 while (cont==true){
                     try{
                         String msg=readIn.readLine();
+                        if(msg==null){
+                            cont=false;
+                            break;
+                        }
                         System.out.println(msg);
                     }catch(SocketException e){
                         try {

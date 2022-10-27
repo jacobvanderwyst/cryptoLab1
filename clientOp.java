@@ -2,8 +2,10 @@
 //class listens on the socket
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Scanner;
 
 public class clientOp implements Runnable{
@@ -32,7 +34,10 @@ public class clientOp implements Runnable{
 		while(connected==true){
 			try{
 				System.out.println(readIn.readLine());
-			}catch(Exception e){
+			}catch(SocketException e){
+				connected=false;
+				e.printStackTrace();
+			}catch(IOException e){
 				e.printStackTrace();
 			}
 		}
@@ -40,7 +45,9 @@ public class clientOp implements Runnable{
 			this.readIn.close();
 			this.readOut.close();
 			this.s.close();
-		}catch(Exception e){
+		}catch(SocketException e){
+			e.printStackTrace();
+		}catch(IOException e){
 			e.printStackTrace();
 		}
 	}
