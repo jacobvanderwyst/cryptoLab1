@@ -14,6 +14,8 @@ public class client {
         
         System.out.print("type localhost or server address\n");
         String host= kb.nextLine();
+        System.out.println("login or (reg)ister user");
+        String logOrReg=kb.nextLine();
         System.out.print("Username: ");
         String username= kb.nextLine();
         System.out.print("Password: ");
@@ -30,6 +32,7 @@ public class client {
         PrintStream readOut= new PrintStream(s.getOutputStream());
         
         // send credentials
+        readOut.println(logOrReg);
         readOut.println(username);
         readOut.println(hash.createSHAHash(password)); // send hashed password
         if(s.isConnected()==false){ // 

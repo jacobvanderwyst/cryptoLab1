@@ -36,7 +36,7 @@ public class clientOp implements Runnable{
 				System.out.println(readIn.readLine());
 			}catch(SocketException e){
 				connected=false;
-				e.printStackTrace();
+				//e.printStackTrace();
 			}catch(IOException e){
 				e.printStackTrace();
 			}
@@ -46,7 +46,7 @@ public class clientOp implements Runnable{
 			this.readOut.close();
 			this.s.close();
 		}catch(SocketException e){
-			e.printStackTrace();
+			//e.printStackTrace();
 		}catch(IOException e){
 			e.printStackTrace();
 		}

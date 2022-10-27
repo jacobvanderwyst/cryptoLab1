@@ -35,15 +35,16 @@ public class server {
 			BufferedReader readIn= new BufferedReader(new InputStreamReader(s.getInputStream()));
 			PrintStream readOut= new PrintStream(s.getOutputStream());
 
+			String logOrReg=readIn.readLine();
 			//get client credentials
 			String user=readIn.readLine();
 			String password=readIn.readLine();
 
 			//validate credentials
-			for(clientOp op:arr){
+			/*for(clientOp op:arr){
 				System.out.println(op.user+" "+op.password);
 				//System.out.println("password");
-			}
+			}*/
 			//System.out.println("passed print arr");
 			boolean pass=false;
 			for(clientOp ops:arr){
@@ -62,10 +63,26 @@ public class server {
 			// creates thread for each user
 			clientOp thisClient= new clientOp(s,user, readIn, readOut, user, password);
 			Thread thr= new Thread(thisClient);
-
-			arr.add(thisClient); // add client to database memory pool
-			out.println(thisClient.user+" "+thisClient.password); // add client to database storage
-			out.flush(); // commit to storage
+			//register client
+			if(logOrReg.equals("reg")){// if the current user is able to login, let it create a user
+				//determine if client is registered
+				pass=false;
+				for(clientOp ops:arr){
+					if(ops.user.equals(user)){
+						pass=true;
+					}
+				}
+				if(pass==true){
+					readOut.println("User registered");
+					System.out.println(user+" has been registered");
+				}else{
+					System.out.println("User already registered");
+				}
+				//add a new client
+				arr.add(thisClient); // add client to database memory pool
+				out.println(thisClient.user+" "+thisClient.password); // add client to database storage
+				out.flush(); // commit to storage
+			}
 			thr.start(); // start the user thread
 
 			clientNum++;
