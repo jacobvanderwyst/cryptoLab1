@@ -35,9 +35,7 @@ public class server {
 			thr.start();
 
 			clientNum++;
-			for(clientOp a:server.arr){
-				readOut.println(a+" ");
-			}
+			
 
 			Thread sendMessage=new Thread(new Runnable(){
 				@Override
@@ -59,6 +57,9 @@ public class server {
 				}
 			});
 			sendMessage.start();
+			for(clientOp a:server.arr){
+				readOut.println(a+" ");
+			}
 		}
 		
 	}
