@@ -48,7 +48,7 @@ public class client {
                 while (cont){
                     try{
                         String msg=readIn.readLine();
-                        if(msg.equals("exit")){
+                        if((msg.equals("exit"))||(msg==null)){
                             //exit
                             cont=false;
                             break;
