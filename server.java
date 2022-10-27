@@ -46,6 +46,7 @@ public class server {
 						String msg = kb.nextLine();
 						try{
 							readOut.println("Server: "+msg); // send message
+							System.out.print("Send a message: ");
 							if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
 								//exit
 								cont=false;

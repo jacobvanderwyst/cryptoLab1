@@ -29,6 +29,7 @@ public class client {
                     String msg = kb.nextLine();
                     try{
                         readOut.println(msg); // send message
+                        System.out.print("Send a message: ");
                         if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
                             //exit
                             cont=false;
