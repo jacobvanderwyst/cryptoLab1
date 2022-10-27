@@ -14,7 +14,7 @@ public class client {
         boolean adduser=false;
         System.out.print("type localhost or server address\n");
         String host= kb.nextLine();
-        System.out.println("login or (reg)ister user");
+        System.out.println("login or (reg)ister user\nJacob is the only valid user at start, password is 1234");
         String logOrReg=kb.nextLine();
         if(logOrReg.equals("reg")){
             adduser=true;
