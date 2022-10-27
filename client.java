@@ -12,11 +12,11 @@ public class client {
 
         // define client configurations
         
-        System.out.print("type localhost or server address");
+        System.out.print("type localhost or server address\n");
         String host= kb.nextLine();
         System.out.print("Username: ");
         String username= kb.nextLine();
-        System.out.print("\nPasswords: ");
+        System.out.print("Password: ");
         String password= kb.nextLine();
         
 
@@ -34,9 +34,10 @@ public class client {
         readOut.println(hash.createSHAHash(password)); // send hashed password
         if(s.isConnected()==false){ // 
             s.close();
+            kb.close();
             System.out.println("Server error or Login Failed");
         }
-        
+
         //read message
         Thread readMessage=new Thread(new Runnable(){
             @Override
@@ -46,8 +47,17 @@ public class client {
                     try{
                         String msg=readIn.readLine();
                         System.out.println(msg);
-                    }catch(Exception e){
+                    }catch(SocketException e){
+                        try {
+                            cont=false;
+                            e.printStackTrace();
+                            s.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }catch (IOException e){
                         e.printStackTrace();
+                        
                     }
                 }
             }

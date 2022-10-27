@@ -26,25 +26,29 @@ public class server {
 			//get I/O
 			BufferedReader readIn= new BufferedReader(new InputStreamReader(s.getInputStream()));
 			PrintStream readOut= new PrintStream(s.getOutputStream());
+
 			//get client credentials
 			String user=readIn.readLine();
 			String password=readIn.readLine();
+
 			//validate credentials
 			for(clientOp ops:arr){
 				if(ops.password.equals(password)){
+					System.out.println(ops.password);
 					readOut.println("Connection established");
-					System.out.println("Client: "+clientNum+" connected");
+					System.out.println("Client "+user+" connected");
 				}else{
+					System.out.println("Client "+user+" rejected for incorrect password");
 					s.close();
 				}
 			}
 			
 			// creates thread for each user
-			clientOp thisClient= new clientOp(s,"client "+clientNum, readIn, readOut, password, user);
+			clientOp thisClient= new clientOp(s,"client "+user, readIn, readOut, user, password);
 			Thread thr= new Thread(thisClient);
 
 			arr.add(thisClient); // add client to database memory pool
-			out.println(thisClient); // add client to database storage
+			out.println(thisClient.name+" "+thisClient.user+" "+thisClient.password); // add client to database storage
 			out.flush(); // commit to storage
 			thr.start(); // start the user thread
 
@@ -57,16 +61,12 @@ public class server {
 					boolean cont=true;
 					while(cont==true){
 						String msg = kb.nextLine();
-						try{
-							readOut.println("Server: "+msg); // send message
-							System.out.print("Send a message: ");
-							if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
-								//exit
-								cont=false;
-								break;
-							}
-						}catch(Exception e){
-							e.printStackTrace();
+						readOut.println("Server: "+msg); // send message
+						System.out.print("Send a message: ");
+						if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
+							//exit
+							cont=false;
+							break;
 						}
 					}
 				}

@@ -10,7 +10,7 @@ public class clientOp implements Runnable{
 	public String password;
 	public String user;
 	Scanner kb= new Scanner(System.in);
-	private String name;
+	String name;
 	final BufferedReader readIn;
 	final PrintStream readOut;
 	Socket s;
@@ -31,10 +31,7 @@ public class clientOp implements Runnable{
 	public void run(){
 		while(connected==true){
 			try{
-				
-
-				
-				
+				System.out.println(readIn.readLine());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
