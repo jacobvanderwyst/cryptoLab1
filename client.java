@@ -11,11 +11,14 @@ public class client {
         Scanner kb= new Scanner(System.in);
 
         // define client configurations
-        
+        boolean adduser=false;
         System.out.print("type localhost or server address\n");
         String host= kb.nextLine();
         System.out.println("login or (reg)ister user");
         String logOrReg=kb.nextLine();
+        if(logOrReg.equals("reg")){
+            adduser=true;
+        }
         System.out.print("Username: ");
         String username= kb.nextLine();
         System.out.print("Password: ");
@@ -35,10 +38,18 @@ public class client {
         readOut.println(logOrReg);
         readOut.println(username);
         readOut.println(hash.createSHAHash(password)); // send hashed password
-        if(s.isConnected()==false){ // 
+
+        if(adduser==true){ // send new user information is add user is true
+            System.out.print("New users username: ");
+            readOut.println(kb.nextLine());
+            System.out.print("New users password: ");
+            readOut.println(hash.createSHAHash(kb.nextLine()));
+        }
+
+        if(s.isConnected()==false){ // determine if the login was rejected or if there was an error
             s.close();
             kb.close();
-            System.out.println("Server error or Login Failed");
+            System.out.println("\nServer error or Login Failed");
         }
 
         //read message

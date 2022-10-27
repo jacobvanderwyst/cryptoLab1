@@ -39,21 +39,18 @@ public class server {
 			//get client credentials
 			String user=readIn.readLine();
 			String password=readIn.readLine();
+			String nuser=readIn.readLine();
+			String npass=readIn.readLine();
 
 			//validate credentials
-			/*for(clientOp op:arr){
-				System.out.println(op.user+" "+op.password);
-				//System.out.println("password");
-			}*/
-			//System.out.println("passed print arr");
 			boolean pass=false;
 			for(clientOp ops:arr){
-				if(ops.password.equals(password)){
+				if(ops.password.equals(password) && (ops.user.equals(user))){
 					pass=true;
 				}
 			}
 			if(pass==true){
-				readOut.println("Connection established");
+				readOut.println("Server: Connection established");
 				System.out.println("Client "+user+" connected");
 			}else{
 				System.out.println("Client "+user+" rejected for incorrect password");
@@ -64,28 +61,30 @@ public class server {
 			clientOp thisClient= new clientOp(s,user, readIn, readOut, user, password);
 			Thread thr= new Thread(thisClient);
 			//register client
-			if(logOrReg.equals("reg")){// if the current user is able to login, let it create a user
+			if(logOrReg.equals("reg") && pass==true){// if the current user is able to login, let it create a user
 				//determine if client is registered
 				pass=false;
 				for(clientOp ops:arr){
-					if(ops.user.equals(user)){
-						pass=true;
+					if(ops.user.equals(nuser) && (ops.password.equals(npass))){
+						pass=true; // user is registered
 					}
 				}
-				if(pass==true){
-					readOut.println("User registered");
-					System.out.println(user+" has been registered");
+				if(pass==false){ // user is not registered
+					readOut.println("Server: User registered");
+					System.out.println(nuser+" has been registered");
+					//add a new client
+					arr.add(thisClient); // add client to database memory pool
+					out.println(nuser+" "+npass); // add client to database storage
+					out.flush(); // commit to storage
 				}else{
-					System.out.println("User already registered");
+					System.out.println("User "+nuser+" already registered");
+					readOut.println("Server: "+nuser+" already registered");
 				}
-				//add a new client
-				arr.add(thisClient); // add client to database memory pool
-				out.println(thisClient.user+" "+thisClient.password); // add client to database storage
-				out.flush(); // commit to storage
+				
 			}
 			thr.start(); // start the user thread
-
 			clientNum++;
+			
 			
 			//send message
 			/*Thread sendMessage=new Thread(new Runnable(){
