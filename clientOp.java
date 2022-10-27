@@ -34,10 +34,23 @@ public class clientOp implements Runnable{
 					this.s.close();
 					break;
 				}
+				msg=msg+"@";
 				String[] splitMsg=msg.split("@");
 				String sendThis=splitMsg[0];
-				//String destination=splitMsg[1];
-				readOut.println(this.name+": "+sendThis);
+				String destination=splitMsg[1];
+
+				for(clientOp ops:server.arr){
+					if(ops.name.equals(destination)){
+						readOut.println(this.name+": "+sendThis);
+						break;
+					}else if(destination==""){
+						readOut.println(this.name+": "+sendThis);
+					}else{
+						readOut.println(this.name+": "+sendThis);	
+					}
+
+				}
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
