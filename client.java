@@ -9,7 +9,7 @@ public class client {
         //44.208.139.146
         // Create client socket
         Scanner kb= new Scanner(System.in);
-        System.out.print("Connect to localhost or remote server");
+        System.out.print("type localhost or server address");
         String host= kb.nextLine();
         if(host.equals("localhost") == false){
             host="44.208.139.146";
