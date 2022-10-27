@@ -11,7 +11,7 @@ public class clientOp implements Runnable{
 	Socket s;
 	boolean connected;
 	
-	public clientOp(Socket s, BufferedReader readIn, PrintStream readOut) {
+	public clientOp(Socket s, String name, BufferedReader readIn, PrintStream readOut) {
 		this.readIn=readIn;
 		this.readOut=readOut;
 		this.name=name;
@@ -22,13 +22,15 @@ public class clientOp implements Runnable{
 	@Override
 	public void run(){
 		String msg;
-		while(true){
+		boolean cont=true;
+		while(cont==true){
 			try{
 				msg=readIn.readLine();
-				System.out.println("Client: "+msg);
+				System.out.println(msg);
 
-				if(msg.equals("Exit")){
+				if(msg.equals("exit")){
 					this.connected=false;
+					cont=false;
 					this.s.close();
 					break;
 				}

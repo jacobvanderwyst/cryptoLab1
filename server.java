@@ -22,8 +22,9 @@ public class server {
 			//get I/O
 			BufferedReader readIn= new BufferedReader(new InputStreamReader(s.getInputStream()));
 			PrintStream readOut= new PrintStream(s.getOutputStream());
+			readOut.println("Connection established");
 
-			clientOp thisClient= new clientOp(s, readIn, readOut);
+			clientOp thisClient= new clientOp(s,"client "+clientNum, readIn, readOut);
 			Thread thr= new Thread(thisClient);
 
 			System.out.println("Client added");

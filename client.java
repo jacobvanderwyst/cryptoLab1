@@ -19,13 +19,14 @@ public class client {
         Thread sendMessage=new Thread(new Runnable(){
             @Override
             public void run() {
-                while(true){
+                boolean cont=true;
+                while(cont==true){
                     String msg = kb.nextLine();
                     try{
                         readOut.println(msg); // send message
                         if(msg.equals("exit")){
                             //exit
-                            System.exit(0);
+                            cont=false;
                             break;
                         }
                     }catch(Exception e){
