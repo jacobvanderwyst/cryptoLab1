@@ -25,6 +25,7 @@ public class client {
             @Override
             public void run() {
                 boolean cont=true;
+                System.out.print("Send a message: ");
                 while(cont==true){
                     String msg = kb.nextLine();
                     try{
@@ -51,10 +52,13 @@ public class client {
                         String msg=readIn.readLine();
                         if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
                             //exit
+                            System.out.println("break");
                             cont=false;
                             break;
+                        }else{
+                            System.out.println(msg);
                         }
-                        System.out.println(msg);
+                        
                     }catch(Exception e){
                         e.printStackTrace();
                     }

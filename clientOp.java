@@ -41,7 +41,8 @@ public class clientOp implements Runnable{
 				System.out.println("sendThis "+sendThis);
 				String destination=splitMsg[1];
 				System.out.println("destination "+destination);
-
+				// added DH ecryption, file is encrypted and sent
+				//why are messages not being sent to individual clients
 				for(clientOp ops:server.arr){
 					System.out.println("aa");
 					if(ops.name.equals(destination)){
