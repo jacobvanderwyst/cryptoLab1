@@ -53,7 +53,7 @@ public class client {
                             cont=false;
                             break;
                         }
-                        System.out.println("Recieved: " + msg);
+                        System.out.println(msg);
                     }catch(Exception e){
                         e.printStackTrace();
                     }
