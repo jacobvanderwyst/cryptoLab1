@@ -65,6 +65,7 @@ public class client {
                 }
             }
         });
+        
         sendMessage.start();
         readMessage.start();
     }

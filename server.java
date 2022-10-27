@@ -7,10 +7,12 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class server {
-	static Vector<clientOp>arr=new Vector<>();
+	static Vector<clientOp>arr=new Vector<>(); //stores client information
 	static int clientNum=0;
 	public static void main(String args[]) throws Exception
 	{
+		// TO DO add pool database storage from file into memory
+		PrintWriter out=new PrintWriter("credentials.txt");
 		ServerSocket ss = new ServerSocket(4000);
 		System.out.println("Server started on 4000");
 		Scanner kb= new Scanner(System.in);
@@ -24,20 +26,30 @@ public class server {
 			//get I/O
 			BufferedReader readIn= new BufferedReader(new InputStreamReader(s.getInputStream()));
 			PrintStream readOut= new PrintStream(s.getOutputStream());
-			readOut.println("Connection established");
+			//get client credentials
+			String user=readIn.readLine();
+			String password=readIn.readLine();
+			//validate credentials
+			for(clientOp ops:arr){
+				if(ops.password.equals(password)){
+					readOut.println("Connection established");
+					System.out.println("Client: "+clientNum+" connected");
+				}else{
+					s.close();
+				}
+			}
 
-			clientOp thisClient= new clientOp(s,"client "+clientNum, readIn, readOut);
+			clientOp thisClient= new clientOp(s,"client "+clientNum, readIn, readOut, password, user);
 			Thread thr= new Thread(thisClient);
 
-			System.out.println("Client: "+clientNum+" connected");
-
-			arr.add(thisClient);
-			
-			thr.start();
+			arr.add(thisClient); // add client to database memory pool
+			out.println(thisClient); // add client to database storage
+			out.flush(); // commit to storage
+			thr.start(); // start the user thread
 
 			clientNum++;
 			
-
+			//send message
 			Thread sendMessage=new Thread(new Runnable(){
 				@Override
 				public void run() {
@@ -58,11 +70,35 @@ public class server {
 					}
 				}
 			});
+			//read message
+			Thread readMessage=new Thread(new Runnable(){
+				@Override
+				public void run(){
+					boolean cont=true;
+					while (cont==true){
+						try{
+							String msg=readIn.readLine();
+							if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
+								//exit
+								System.out.println("break");
+								cont=false;
+								break;
+							}else{
+								System.out.println(msg);
+							}
+							
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				}
+			});
 			sendMessage.start();
-			for(clientOp a:server.arr){
-				readOut.println(a);
-			}
+			readMessage.start();
 		}
-		
+		out.close();
+		ss.close();
+		kb.close();
+
 	}
 }
