@@ -3,7 +3,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-class clientOp implements Runnable{
+public class clientOp implements Runnable{
 	Scanner kb= new Scanner(System.in);
 	private String name;
 	final BufferedReader readIn;
