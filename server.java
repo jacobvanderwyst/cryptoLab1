@@ -3,84 +3,35 @@
 
 import java.io.*;
 import java.net.*;
-import java.lang.*;
+import java.util.Vector;
 
-public class server extends makeServerSockets{
+public class server {
+	static Vector<clientOp>arr=new Vector<>();
+	static int clientNum=0;
 	public static void main(String args[]) throws Exception
 	{
-		/*  Create server Socket
 		ServerSocket ss = new ServerSocket(4000);
 		System.out.println("Server started on 4000");
-		// connect it to client socket
-		Socket s = ss.accept();
-		System.out.println("Connection established");
-
-		// to send data to the client
-		PrintStream ps
-			= new PrintStream(s.getOutputStream());
-
-		// to read data coming from the client
-		BufferedReader br
-			= new BufferedReader(
-				new InputStreamReader(
-					s.getInputStream()));
-
-		// to read data from the keyboard
-		BufferedReader kb
-			= new BufferedReader(
-				new InputStreamReader(System.in));
-
-		// server executes continuously
-		ps.println("server says \"hello world\"");
-		while (true) {
 		
-			String str, str1;
+		Socket s; // Socket for client communication
 
-			// repeat as long as the client
-			// does not send a null string
+		while (true){
+			s=ss.accept();
+			System.out.println("New client connected: "+s);
 
-			// read from client
-			
-			while ((str = br.readLine()) != null) {
-				if((str = br.readLine()) != ""){
-					System.out.println("Message received");
-					System.out.println("Client: "+str);
-					str1 = kb.readLine();
-					ps.println("ayo");
-	
-					// send to client
-					ps.println(str1);
-					System.out.println("Message \"" + str1 + "\" sent\nWaiting for client message...");
-				}else{
-					// close connection
-					ps.close();
-					br.close();
-					kb.close();
-					ss.close();
-					s.close();
-					System.exit(1); //empty message
-				}
-			}
+			//get I/O
+			BufferedReader readIn= new BufferedReader(new InputStreamReader(s.getInputStream()));
+			PrintStream readOut= new PrintStream(s.getOutputStream());
 
-			// close connection
-			ps.close();
-			br.close();
-			kb.close();
-			ss.close();
-			s.close();
+			clientOp thisClient= new clientOp(s, readIn, readOut);
+			Thread thr= new Thread(thisClient);
 
-			// terminate application
-			System.exit(0);
+			System.out.println("Client added");
 
-		} // end of while */
-		//server creation
-		makeServerSockets socks= new makeServerSockets();
-		ServerSocket[] ssArr=socks.setSS();
-		acceptThread act=new acceptThread();
-		
-		act.start(); //client accepted
-		
-		
-		
+			arr.add(thisClient);
+			thr.start();
+
+			clientNum++;
+		}
 	}
 }
