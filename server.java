@@ -32,6 +32,7 @@ public class server {
 			System.out.println("Client: "+clientNum+" connected");
 
 			arr.add(thisClient);
+			System.out.println("this client"+thisClient);
 			thr.start();
 
 			clientNum++;
@@ -58,7 +59,7 @@ public class server {
 			});
 			sendMessage.start();
 			for(clientOp a:server.arr){
-				readOut.println(a+" ");
+				readOut.println(a);
 			}
 		}
 		
