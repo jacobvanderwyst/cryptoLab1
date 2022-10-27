@@ -6,12 +6,21 @@ import java.util.Scanner;
 public class client {
   
     public static void main(String args[])throws Exception{
-        //44.208.139.146
-        // Create client socket
+        //create objects
+        HashCreator hash= new HashCreator();
         Scanner kb= new Scanner(System.in);
+
+        // define client configurations
+        
         System.out.print("type localhost or server address");
         String host= kb.nextLine();
-        if(host.equals("localhost") == false){
+        System.out.print("Username: ");
+        String username= kb.nextLine();
+        System.out.print("\nPasswords: ");
+        String password= kb.nextLine();
+        
+
+        if(host.equals("localhost") == false){// define host to connect to
             host="44.208.139.146";
         }else{
             host="localhost";
@@ -20,28 +29,14 @@ public class client {
         BufferedReader readIn= new BufferedReader(new InputStreamReader(s.getInputStream()));
         PrintStream readOut= new PrintStream(s.getOutputStream());
         
-        //send message 
-        Thread sendMessage=new Thread(new Runnable(){
-            @Override
-            public void run() {
-                boolean cont=true;
-                System.out.print("Send a message: ");
-                while(cont==true){
-                    String msg = kb.nextLine();
-                    try{
-                        readOut.println(msg); // send message
-                        System.out.print("Send a message: ");
-                        if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
-                            //exit
-                            cont=false;
-                            break;
-                        }
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+        // send credentials
+        readOut.println(username);
+        readOut.println(hash.createSHAHash(password)); // send hashed password
+        if(s.isConnected()==false){ // 
+            s.close();
+            System.out.println("Server error or Login Failed");
+        }
+        
         //read message
         Thread readMessage=new Thread(new Runnable(){
             @Override
@@ -50,23 +45,13 @@ public class client {
                 while (cont==true){
                     try{
                         String msg=readIn.readLine();
-                        if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
-                            //exit
-                            System.out.println("break");
-                            cont=false;
-                            break;
-                        }else{
-                            System.out.println(msg);
-                        }
-                        
+                        System.out.println(msg);
                     }catch(Exception e){
                         e.printStackTrace();
                     }
                 }
             }
         });
-        
-        sendMessage.start();
         readMessage.start();
     }
 }

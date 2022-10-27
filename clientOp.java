@@ -1,9 +1,14 @@
+//class handles reading and writing to the streams
+//class listens on the socket
+
 import java.io.BufferedReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class clientOp implements Runnable{
+	public String password;
+	public String user;
 	Scanner kb= new Scanner(System.in);
 	private String name;
 	final BufferedReader readIn;
@@ -11,61 +16,33 @@ public class clientOp implements Runnable{
 	Socket s;
 	boolean connected;
 	
-	public clientOp(Socket s, String name, BufferedReader readIn, PrintStream readOut) {
+	
+	public clientOp(Socket s, String name, BufferedReader readIn, PrintStream readOut, String user, String password) {
 		this.readIn=readIn;
 		this.readOut=readOut;
 		this.name=name;
 		this.s=s;
 		this.connected=true;
+		this.user=user;
+		this.password=password;
 	}
 
 	@Override
 	public void run(){
-		String msg;
-		boolean cont=true;
-		while(cont==true){
+		while(connected==true){
 			try{
-				msg=readIn.readLine();
-				System.out.println(msg);
+				
 
-				if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
-					this.connected=false;
-					cont=false;
-					this.s.close();
-					break;
-				}
-				msg=msg+"@ ";
-				System.out.println("msg "+msg);
-				String[] splitMsg=msg.split("@");
-				String sendThis=splitMsg[0];
-				System.out.println("sendThis "+sendThis);
-				String destination=splitMsg[1];
-				System.out.println("destination "+destination);
-				// added DH ecryption, file is encrypted and sent
-				//why are messages not being sent to individual clients
-				for(clientOp ops:server.arr){
-					System.out.println("aa");
-					if(ops.name.equals(destination)){
-						System.out.println("a");
-						readOut.println(this.name+": "+sendThis);
-						//break;
-					}else if(destination==""){
-						System.out.println("b");
-						readOut.println(this.name+": "+sendThis);
-					}else{
-						System.out.println("c");
-						readOut.println(this.name+": "+sendThis);	
-					}
-
-				}
+				
 				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
-		try{
+		try{// clean streams
 			this.readIn.close();
 			this.readOut.close();
+			this.s.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

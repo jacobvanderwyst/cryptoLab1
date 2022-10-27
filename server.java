@@ -38,7 +38,8 @@ public class server {
 					s.close();
 				}
 			}
-
+			
+			// creates thread for each user
 			clientOp thisClient= new clientOp(s,"client "+clientNum, readIn, readOut, password, user);
 			Thread thr= new Thread(thisClient);
 
