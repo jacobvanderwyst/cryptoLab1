@@ -39,9 +39,15 @@ public class client {
         Thread readMessage=new Thread(new Runnable(){
             @Override
             public void run(){
-                while (true){
+                boolean cont=true;
+                while (cont){
                     try{
                         String msg=readIn.readLine();
+                        if(msg.equals("exit")){
+                            //exit
+                            cont=false;
+                            break;
+                        }
                         System.out.println("Recieved: " + msg);
                     }catch(Exception e){
                         e.printStackTrace();
