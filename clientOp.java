@@ -43,6 +43,7 @@ public class clientOp implements Runnable{
 				System.out.println("destination "+destination);
 
 				for(clientOp ops:server.arr){
+					System.out.println("aa");
 					if(ops.name.equals(destination)){
 						System.out.println("a");
 						readOut.println(this.name+": "+sendThis);
