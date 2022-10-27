@@ -35,7 +35,7 @@ public class clientOp implements Runnable{
 					break;
 				}
 				msg=msg+"@";
-				System.out.println("msg "+msg)
+				System.out.println("msg "+msg);
 				String[] splitMsg=msg.split("@");
 				String sendThis=splitMsg[0];
 				String destination=splitMsg[1];
