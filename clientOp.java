@@ -40,7 +40,7 @@ public class clientOp implements Runnable{
 
 				for(clientOp ops:server.arr){
 					if(ops.name.equals(destination)){
-						ops.readOut.println(this.name+" : "+sendThis);
+						ops.readOut.println(this.name+": "+sendThis);
 						break;
 					}
 				}

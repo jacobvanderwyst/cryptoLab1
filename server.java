@@ -3,6 +3,7 @@
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 import java.util.Vector;
 
 public class server {
@@ -12,6 +13,7 @@ public class server {
 	{
 		ServerSocket ss = new ServerSocket(4000);
 		System.out.println("Server started on 4000");
+		Scanner kb= new Scanner(System.in);
 		
 		Socket s; // Socket for client communication
 
@@ -27,12 +29,34 @@ public class server {
 			clientOp thisClient= new clientOp(s,"client "+clientNum, readIn, readOut);
 			Thread thr= new Thread(thisClient);
 
-			System.out.println("Client added");
+			System.out.println("Client: "+clientNum+" connected");
 
 			arr.add(thisClient);
 			thr.start();
 
 			clientNum++;
+
+			Thread sendMessage=new Thread(new Runnable(){
+				@Override
+				public void run() {
+					boolean cont=true;
+					while(cont==true){
+						String msg = kb.nextLine();
+						try{
+							readOut.println(msg); // send message
+							if(msg.equals("exit")){
+								//exit
+								cont=false;
+								break;
+							}
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+			sendMessage.start();
 		}
+		
 	}
 }
