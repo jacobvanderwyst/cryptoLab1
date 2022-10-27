@@ -29,7 +29,7 @@ public class client {
                     String msg = kb.nextLine();
                     try{
                         readOut.println(msg); // send message
-                        if(msg.equals("exit")){
+                        if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
                             //exit
                             cont=false;
                             break;
@@ -45,10 +45,10 @@ public class client {
             @Override
             public void run(){
                 boolean cont=true;
-                while (cont){
+                while (cont==true){
                     try{
                         String msg=readIn.readLine();
-                        if((msg.equals("exit"))||(msg==null)){
+                        if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
                             //exit
                             cont=false;
                             break;

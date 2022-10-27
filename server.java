@@ -16,8 +16,8 @@ public class server {
 		Scanner kb= new Scanner(System.in);
 		
 		Socket s; // Socket for client communication
-
-		while (true){
+		boolean cont=true;
+		while (cont==true){
 			s=ss.accept();
 			System.out.println("New client connected: "+s);
 
@@ -44,7 +44,7 @@ public class server {
 						String msg = kb.nextLine();
 						try{
 							readOut.println("Server: "+msg); // send message
-							if((msg.equals("exit"))||(msg==null)){
+							if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
 								//exit
 								cont=false;
 								break;

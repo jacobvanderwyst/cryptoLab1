@@ -28,7 +28,7 @@ public class clientOp implements Runnable{
 				msg=readIn.readLine();
 				System.out.println(msg);
 
-				if(msg.equals("exit")){
+				if((msg.equals("exit"))||(msg==null)||(msg.equals(""))){
 					this.connected=false;
 					cont=false;
 					this.s.close();
