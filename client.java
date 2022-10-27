@@ -50,7 +50,7 @@ public class client {
                     }catch(SocketException e){
                         try {
                             cont=false;
-                            e.printStackTrace();
+                            System.out.print("Error: "+e);
                             s.close();
                         } catch (IOException e1) {
                             e1.printStackTrace();

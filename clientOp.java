@@ -10,7 +10,7 @@ public class clientOp implements Runnable{
 	public String password;
 	public String user;
 	Scanner kb= new Scanner(System.in);
-	String name;
+	public String name;
 	final BufferedReader readIn;
 	final PrintStream readOut;
 	Socket s;
