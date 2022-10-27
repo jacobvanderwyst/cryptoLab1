@@ -1,5 +1,4 @@
-// Server2 class that
-// receives data and sends data
+//credentials must start on new empty line
 
 import java.io.*;
 import java.net.*;
