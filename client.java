@@ -9,8 +9,13 @@ public class client {
         //44.208.139.146
         // Create client socket
         Scanner kb= new Scanner(System.in);
-        System.out.print("Connect to : ");
+        System.out.print("Connect to localhost or remote server");
         String host= kb.nextLine();
+        if(host.equals("localhost") == false){
+            host="44.208.139.146";
+        }else{
+            host="localhost";
+        }
         Socket s = new Socket(host, 4000);
         BufferedReader readIn= new BufferedReader(new InputStreamReader(s.getInputStream()));
         PrintStream readOut= new PrintStream(s.getOutputStream());
