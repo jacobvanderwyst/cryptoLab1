@@ -11,12 +11,19 @@ public class server {
 	static int clientNum=0;
 	public static void main(String args[]) throws Exception
 	{
-		// TO DO add pool database storage from file into memory
-		PrintWriter out=new PrintWriter("credentials.txt");
+		PrintWriter out = new PrintWriter(new FileOutputStream(new File("credentials.txt"),true));
 		ServerSocket ss = new ServerSocket(4000);
 		System.out.println("Server started on 4000");
-		Scanner kb= new Scanner(System.in);
+		Scanner kb= new Scanner(new File("credentials.txt"));
 		
+		// load credentials into memory
+		while(kb.hasNextLine()){
+			String user=kb.next();
+			String password=kb.next();
+			clientOp thisClient= new clientOp(null, null, null, null, user, password);
+			arr.add(thisClient);
+		}
+
 		Socket s; // Socket for client communication
 		boolean cont=true;
 		while (cont==true){
@@ -32,6 +39,11 @@ public class server {
 			String password=readIn.readLine();
 
 			//validate credentials
+			for(clientOp op:arr){
+				System.out.println(op.user+" "+op.password);
+				System.out.println("password");
+			}
+			System.out.println("passed print arr");
 			for(clientOp ops:arr){
 				if(ops.password.equals(password)){
 					System.out.println(ops.password);
@@ -44,11 +56,11 @@ public class server {
 			}
 			
 			// creates thread for each user
-			clientOp thisClient= new clientOp(s,"client "+user, readIn, readOut, user, password);
+			clientOp thisClient= new clientOp(s,user, readIn, readOut, user, password);
 			Thread thr= new Thread(thisClient);
 
 			arr.add(thisClient); // add client to database memory pool
-			out.println(thisClient.name+" "+thisClient.user+" "+thisClient.password); // add client to database storage
+			out.println(thisClient.user+" "+thisClient.password); // add client to database storage
 			out.flush(); // commit to storage
 			thr.start(); // start the user thread
 
