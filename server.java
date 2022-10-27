@@ -36,7 +36,7 @@ public class server {
 
 			clientNum++;
 			for(clientOp a:server.arr){
-				readOut.print(a+" ");
+				readOut.println(a+" ");
 			}
 
 			Thread sendMessage=new Thread(new Runnable(){
