@@ -7,5 +7,5 @@ os.system("cd /var/www/html && git clone https://github.com/jacobvanderwyst/cryp
 os.system("find -name \"*.java\" > sources.txt")
 os.system("javac @sources.txt")
 os.system("echo \"compiled classes\"")
-
+os.system("echo \"cd .. && python3 cryptoLab1/compile.py && cd cryptoLab1 && clear\"")
 os.system("tree")
