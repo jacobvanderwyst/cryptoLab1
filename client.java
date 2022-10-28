@@ -1,7 +1,15 @@
 
 import java.io.*;
 import java.net.*;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Scanner;
+
+import javax.crypto.SecretKey;
   
 public class client {
   
@@ -31,19 +39,19 @@ public class client {
             host="localhost";
         }
         Socket s = new Socket(host, 4000);
-        BufferedReader readIn= new BufferedReader(new InputStreamReader(s.getInputStream()));
-        PrintStream readOut= new PrintStream(s.getOutputStream());
+        DataInputStream readIn= new DataInputStream(s.getInputStream());
+        DataOutputStream readOut= new DataOutputStream(s.getOutputStream());
         
         // send credentials
-        readOut.println(logOrReg);
-        readOut.println(username);
-        readOut.println(hash.createSHAHash(password)); // send hashed password
+        readOut.writeUTF(logOrReg);
+        readOut.writeUTF(username);
+        readOut.writeUTF(hash.createSHAHash(password)); // send hashed password
 
         if(adduser==true){ // send new user information is add user is true
             System.out.print("New users username: ");
-            readOut.println(kb.nextLine());
+            readOut.writeUTF(kb.nextLine());
             System.out.print("New users password: ");
-            readOut.println(hash.createSHAHash(kb.nextLine()));
+            readOut.writeUTF(hash.createSHAHash(kb.nextLine()));
         }
 
         if(s.isConnected()==false){ // determine if the login was rejected or if there was an error
@@ -51,15 +59,62 @@ public class client {
             kb.close();
             System.out.println("\nServer error or Login Failed");
         }
+        System.out.println(readIn.readUTF()); // established
+        System.out.println(readIn.readUTF()); // user registered
+        System.out.println(readIn.readUTF());// file transfer
+
+        clientskip csk= new clientskip();
+
+        //key exchanges
+        PublicKey pk=null;
+        //create client key
+        KeyPair kp=csk.createClientKey();
+        //System.out.println("client key created");
+
+        //send client key
+        byte[] barr=kp.getPublic().getEncoded();
+        try {
+            readOut=new DataOutputStream(s.getOutputStream());
+            readOut.writeInt(barr.length);  //send len yKey
+            readOut.write(barr); // send string of yKey bytes
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //System.out.println("client key sent");
+
+        //get server key
+        byte[]bar=new byte[readIn.readInt()];
+        readIn.readFully(bar);
+        try {//get servers public key
+            KeyFactory kf= KeyFactory.getInstance("DH");
+            X509EncodedKeySpec spec509= new X509EncodedKeySpec(bar);
+            try {
+                pk=kf.generatePublic(spec509);
+            } catch (InvalidKeySpecException e) {
+                e.printStackTrace();
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        //System.out.println("server key received");
+        //create secret session key
+        byte[] ssk=csk.getSecretSessionKey(kp, pk);
+        //System.out.println("Seceret session key creaed");
+
+        //file operations
+        SecretKey sk=csk.getDeskey(ssk);
+        csk.readFileOut(sk, readIn, readOut);
+        csk.createFile();
+        csk.writeFileOut(sk, readOut);
 
         //read message
-        Thread readMessage=new Thread(new Runnable(){
+       Thread readMessage=new Thread(new Runnable(){
             @Override
             public void run(){
                 boolean cont=true;
                 while (cont==true){
                     try{
-                        String msg=readIn.readLine();
+                        String msg=readIn.readUTF();
                         if(msg==null){
                             cont=false;
                             break;

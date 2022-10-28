@@ -1,7 +1,6 @@
 // code inspired by BurrisJavaCrypto
 
 import java.util.*;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -18,9 +17,10 @@ import java.io.*;
 import java.net.Socket;
 
 // key set up done, add file read, encrypt, decrypt, and send
-public class serverskip{
+public class clientskip{
     //file stuff
     PrintWriter pw;
+
     //keystuff
     byte[] barr;
     KeyPairGenerator kpg;
@@ -34,53 +34,40 @@ public class serverskip{
     DESKeySpec dks;
     SecretKeyFactory skf;
     SecretKey skDES;
-    FileInputStream fis;
     FileOutputStream fos;
+    FileInputStream fis;
+
+    //Server stuff
+    DataOutputStream dos;
 
     // key exchange client/server
-    public KeyPair createServerKey(){
+    public KeyPair createClientKey(){
         try {
             //create server key pair 
             kpg=KeyPairGenerator.getInstance("DH");
             kpg.initialize(1024);
-            kp=kpg.generateKeyPair();
+            kp=kpg.genKeyPair();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return kp;
-    }
-    /*public PublicKey getClientKeyPublic(DataInputStream clientPubKey){
-        try {
-            barr=new byte[clientPubKey.readInt()];
-            clientPubKey.readFully(barr);
+    }// done
 
-            try {
-                kf= KeyFactory.getInstance("DH");
-                spec509= new X509EncodedKeySpec(barr);
-                try {
-                    pk=kf.generatePublic(spec509);
-                } catch (InvalidKeySpecException e) {
-                    
-                    e.printStackTrace();
-                }
-            } catch (NoSuchAlgorithmException e) {
-                
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            
-            e.printStackTrace();
-        }
-        return pk;
-    }*/
-    /*public void sendServerKey(KeyPair serverkeypair, DataOutputStream dos){
+    /*public void sendClientKey(KeyPair clientkeypair, Socket s){
         
-    }*/
-    public byte[] getSecretSessionKey(KeyPair serverkeypair, PublicKey pk){
+    }// done*/
+
+    /*public PublicKey getServerKeyPublic(DataInputStream dis){
+        try {
+            
+        return pk;
+    }// done */
+
+    public byte[] getSecretSessionKey(KeyPair clientkeypair, PublicKey pk){
         try {
             secretK=KeyAgreement.getInstance("DH");
             try {
-                secretK.init(kp.getPrivate());
+                secretK.init(clientkeypair.getPrivate());
                 secretK.doPhase(pk,true);
                 barr=secretK.generateSecret();
             } catch (InvalidKeyException e) {
@@ -92,7 +79,7 @@ public class serverskip{
             e.printStackTrace();
         }
         return barr;
-    }
+    }// done
 
     // file encryption and transmission
     public SecretKey getDeskey(byte[] secret){
@@ -115,8 +102,8 @@ public class serverskip{
             e.printStackTrace();
         }
         return skDES;
-    }
-    public void writeFileOut(SecretKey skDES, DataOutputStream dos){ //starts transmission, encrypts, sends
+    }// done
+    public void writeFileOut(SecretKey skDES, DataOutputStream dos){// starts transmission, encrypt, sends
         try {
             fis=new FileInputStream("serverfile.txt");
         } catch (FileNotFoundException e) {
@@ -229,14 +216,14 @@ public class serverskip{
         try {
             Runtime rt= Runtime.getRuntime();
             try{
-                rt.exec("cmd.exe /c \"rm serverfile.txt\"");
-                rt.exec("bash -c \"rm -f serverfile.txt\"");
-                rt.exec("bash -c \"touch serverfile.txt\"");
-                rt.exec("cmd.exe /c \"copy serverfile.txt\"");
+                rt.exec("cmd.exe /c \"rm clientfile.txt\"");
+                rt.exec("bash -c \"rm -f clientfile.txt\"");
+                rt.exec("bash -c \"touch clientfile.txt\"");
+                rt.exec("cmd.exe /c \"copy clientfile.txt\"");
             }catch(Throwable t){
                 System.out.println("A command failed to execute");
             }
-            pw=new PrintWriter(new FileOutputStream(new File("serverfile.txt"),true));
+            pw=new PrintWriter(new FileOutputStream(new File("clientfile.txt"),true));
             int i=0;
             while(i<100){
                 pw.println(getRandomValue());
@@ -247,5 +234,4 @@ public class serverskip{
             e.printStackTrace();
         }
     }
-
 }

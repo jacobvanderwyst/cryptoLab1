@@ -1,11 +1,13 @@
 //class handles reading and writing to the streams
 //class listens on the socket
 
-import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.security.KeyPair;
+import java.security.PublicKey;
 import java.util.Scanner;
 
 public class clientOp implements Runnable{
@@ -13,13 +15,13 @@ public class clientOp implements Runnable{
 	public String user;
 	Scanner kb= new Scanner(System.in);
 	public String name;
-	final BufferedReader readIn;
-	final PrintStream readOut;
+	final DataInputStream readIn;
+	final DataOutputStream readOut;
 	Socket s;
 	boolean connected;
 	
 	
-	public clientOp(Socket s, String name, BufferedReader readIn, PrintStream readOut, String user, String password) {
+	public clientOp(Socket s, String name, DataInputStream readIn, DataOutputStream readOut, String user, String password) {
 		this.readIn=readIn;
 		this.readOut=readOut;
 		this.name=name;
@@ -28,12 +30,14 @@ public class clientOp implements Runnable{
 		this.user=user;
 		this.password=password;
 	}
+	
 
 	@Override
-	public void run(){
+	public void run(){//checks if socket is running
+		//clientskip sk=new clientskip();
 		while(connected==true){
 			try{
-				System.out.println(readIn.readLine());
+				readIn.readUTF();
 			}catch(SocketException e){
 				connected=false;
 				//e.printStackTrace();
