@@ -1,18 +1,33 @@
 
 import java.io.*;
 import java.net.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Random;
 import java.util.Scanner;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
   
 public class client {
-  
+    public static String getRandomValue() {
+        String out="";
+        String source = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        Random rnd = new Random();
+        int index = (int) (rnd.nextFloat() * source.length()); // get index of random value in source
+        out=out+source.charAt(index); // return the value
+        return out;
+    }
     public static void main(String args[])throws Exception{
         //create objects
         HashCreator hash= new HashCreator();
@@ -103,12 +118,129 @@ public class client {
 
         //file operations
         SecretKey sk=csk.getDeskey(ssk);
-        csk.readFileOut(sk, readIn, readOut);
-        csk.createFile();
-        csk.writeFileOut(sk, readOut);
+        //System.out.println("Secret des key created");
 
+        //read server file
+        FileOutputStream fos=new FileOutputStream("clientfile.txt");
+        try {
+            //Start writing file out
+            try {
+                int ivSize=readIn.readInt();
+                byte[]iv=new byte[ivSize];
+                readIn.readFully(iv);
+                IvParameterSpec ivps =new IvParameterSpec(iv);
+                //System.out.println("params");
+
+                Cipher des=Cipher.getInstance("DES/CBC/PKCS5Padding");
+                try {
+                    des.init(Cipher.DECRYPT_MODE, sk, ivps);
+                } catch (InvalidAlgorithmParameterException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                //System.out.println("cipher");
+                byte[] input=new byte[64];
+                boolean cont=true;
+                int count=0;
+                int byteRead=readIn.read(input);
+                while(cont==true){
+                    
+                    //System.out.println("bread "+byteRead);
+                    if(byteRead==-1){
+                        //System.out.println("end read");
+                        cont=false;
+                        break; // EOF
+                    }
+                    byte[] out=des.update(input,0, byteRead);
+                    if(out != null){
+                        fos.write(out);
+                        System.out.print(new String(out));
+                    }else{
+                        cont=false;
+
+                    }
+                    //System.out.println("\nstuck in loop");
+                    count++;
+                    if(count==400){
+                        break;
+                    }
+                    byteRead=readIn.read(input);
+                }
+                //System.out.println("\nread bytes");
+                byte[] out=des.doFinal();
+                if(out!=null){
+                    fos.write(out);
+                    
+                    System.out.print(new String(out));
+                }
+            } catch (IOException | IllegalBlockSizeException | BadPaddingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        fos.flush();
+        fos.close();
+        //readIn.close();
+        //readOut.close();
+        //System.out.println("");
+        //System.out.println("read server file");
+
+        //create file
+        try {
+            PrintWriter pw=new PrintWriter(new FileOutputStream(new File("serverfile.txt")));
+            int i=0;
+            String sss="";
+            while(i<100){
+                sss=sss+getRandomValue();
+                i+=1;
+            }
+            pw.print(sss);
+            pw.flush();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //System.out.println("created client file");
+
+        // send client file
+        FileInputStream fis=new FileInputStream("serverfile.txt");
+				try {
+					Cipher des=Cipher.getInstance("DES/CBC/PKCS5Padding");
+					des.init(Cipher.ENCRYPT_MODE, sk);
+		
+					//Start writing file out
+					byte[] iV=des.getIV();
+					try {
+						readOut.writeInt(iV.length);
+						readOut.write(iV);
+		
+						byte[] input=new byte[64];
+						while(true){
+							int byteRead=fis.read(input);
+							if(byteRead==-1){
+								break; // EOF
+							}
+							byte[] output=des.update(input,0, byteRead);
+							if(output != null){
+								readOut.write(output);
+							}
+							
+						}
+						byte[] output=des.doFinal();
+							if(output!=null){
+								readOut.write(output);
+							}
+						readOut.flush();
+						readOut.close();
+						readIn.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                fis.close();
         //read message
-       Thread readMessage=new Thread(new Runnable(){
+       /*Thread readMessage=new Thread(new Runnable(){
             @Override
             public void run(){
                 boolean cont=true;
@@ -135,6 +267,9 @@ public class client {
                 }
             }
         });
-        readMessage.start();
+        readMessage.start();*/
+    }catch(Exception e){
+        e.printStackTrace();
     }
+}
 }

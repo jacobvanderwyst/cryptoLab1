@@ -2,20 +2,37 @@
 
 import java.io.*;
 import java.net.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Vector;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 
 public class server {
 	static Vector<clientOp>arr=new Vector<>(); //stores client information
 	static int clientNum=0;
+
+	public static String getRandomValue() {
+        String out="";
+        String source = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        Random rnd = new Random();
+        int index = (int) (rnd.nextFloat() * source.length()); // get index of random value in source
+        out=out+source.charAt(index); // return the value
+        return out;
+    }
 	public static void main(String args[]) throws Exception
 	{
 		PrintWriter out = new PrintWriter(new FileOutputStream(new File("credentials.txt"),true));
@@ -97,7 +114,7 @@ public class server {
 
 				//key exchanges
 				KeyPair kp=csk.createServerKey();
-				System.out.println("server key created");
+				//System.out.println("server key created");
 				PublicKey pk=null;
 
 				//get client key
@@ -125,7 +142,7 @@ public class server {
 					
 					e.printStackTrace();
 				}
-				System.out.println("client key received");
+				//System.out.println("client key received");
 				
 				//send server key
 				byte[] barr=kp.getPublic().getEncoded(); // get yKey
@@ -142,10 +159,127 @@ public class server {
 				//System.out.println("Secret session key created");
 
 				//file operations
+				//created des key
 				SecretKey sk=csk.getDeskey(ssk);
-				csk.readFileOut(sk, readIn, readOut);
-				csk.createFile();
-				csk.writeFileOut(sk, readOut);
+				//System.out.println("Secret des key created");
+
+				//created server file to send
+				try {
+					PrintWriter pw=new PrintWriter(new FileOutputStream(new File("serverfile.txt")));
+					int i=0;
+					String sss="";
+					while(i<100){
+						sss=sss+getRandomValue();
+						i+=1;
+					}
+					pw.print(sss);
+					pw.flush();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//System.out.println("\ncreated server file");
+
+				//encrypted and sent server file
+				FileInputStream fis=new FileInputStream("serverfile.txt");
+				try {
+					Cipher des=Cipher.getInstance("DES/CBC/PKCS5Padding");
+					des.init(Cipher.ENCRYPT_MODE, sk);
+		
+					//Start writing file out
+					byte[] iV=des.getIV();
+					try {
+						readOut.writeInt(iV.length);
+						readOut.write(iV);
+		
+						byte[] input=new byte[64];
+						while(true){
+							int byteRead=fis.read(input);
+							if(byteRead==-1){
+								break; // EOF
+							}
+							byte[] output=des.update(input,0, byteRead);
+							if(output != null){
+								readOut.write(output);
+							}
+							
+						}
+						byte[] output=des.doFinal();
+							if(output!=null){
+								readOut.write(output);
+							}
+						readOut.flush();
+						readOut.close();
+						readIn.close();
+						
+					} catch (IOException | IllegalBlockSizeException | BadPaddingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchPaddingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch(InvalidKeyException e){
+					e.printStackTrace();
+				}
+				fis.close();
+				//System.out.println("sent server file");
+
+				//decrypted client file and save it
+				FileOutputStream fos=new FileOutputStream("clientfile.txt");
+				try {
+					//Start writing file out
+					try {
+						int ivSize=readIn.readInt();
+						byte[]iv=new byte[ivSize];
+						readIn.readFully(iv);
+						IvParameterSpec ivps =new IvParameterSpec(iv);
+		
+						Cipher des=Cipher.getInstance("DES/CBC/PKCS5Padding");
+						try {
+							des.init(Cipher.DECRYPT_MODE, sk, ivps);
+						} catch (InvalidAlgorithmParameterException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		
+						byte[] input=new byte[64];
+						while(true){
+							int byteRead=readIn.read(input);
+							if(byteRead==-1){
+								break; // EOF
+							}
+							byte[] outp=des.update(input,0, byteRead);
+							if(outp != null){
+								fos.write(outp);
+								System.out.print(new String(outp));
+							}
+						}
+						byte[] outpp=des.doFinal();
+						if(out!=null){
+							fos.write(outpp);
+							System.out.print(new String(outpp));
+						}
+					} catch (IOException | IllegalBlockSizeException | BadPaddingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchPaddingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}catch(InvalidKeyException e){
+					e.printStackTrace();
+				}
+				fos.close();
+				//System.out.println("read client file");
+
+				
 			}
 			thr.start(); // start the user thread
 			clientNum++;

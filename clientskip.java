@@ -52,17 +52,6 @@ public class clientskip{
         }
         return kp;
     }// done
-
-    /*public void sendClientKey(KeyPair clientkeypair, Socket s){
-        
-    }// done*/
-
-    /*public PublicKey getServerKeyPublic(DataInputStream dis){
-        try {
-            
-        return pk;
-    }// done */
-
     public byte[] getSecretSessionKey(KeyPair clientkeypair, PublicKey pk){
         try {
             secretK=KeyAgreement.getInstance("DH");
@@ -151,58 +140,7 @@ public class clientskip{
         }
     }
     public void readFileOut(SecretKey skDES, DataInputStream dis, DataOutputStream dos){ // accept transmission, decrypt, save to file
-        try {
-            fos=new FileOutputStream("clientfile.txt");
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            //Start writing file out
-            try {
-                int ivSize=dis.readInt();
-                byte[]iv=new byte[ivSize];
-                dis.readFully(iv);
-                IvParameterSpec ivps =new IvParameterSpec(iv);
-
-                Cipher des=Cipher.getInstance("DES/CBC/PKCS5Padding");
-                try {
-                    des.init(Cipher.DECRYPT_MODE, skDES, ivps);
-                } catch (InvalidAlgorithmParameterException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                byte[] input=new byte[64];
-                while(true){
-                    int byteRead=dis.read(input);
-                    if(byteRead==-1){
-                        break; // EOF
-                    }
-                    byte[] out=des.update(input,0, byteRead);
-                    if(out != null){
-                        fos.write(out);
-                        System.out.print(new String(out));
-                    }
-                }
-                byte[] out=des.doFinal();
-                if(out!=null){
-                    fos.write(out);
-                    System.out.print(new String(out));
-                }
-            } catch (IOException | IllegalBlockSizeException | BadPaddingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }catch(InvalidKeyException e){
-            e.printStackTrace();
-        }
+        
     }
     public String getRandomValue() {
         String out="";
@@ -225,8 +163,9 @@ public class clientskip{
             }
             pw=new PrintWriter(new FileOutputStream(new File("clientfile.txt"),true));
             int i=0;
-            while(i<100){
+            while(i<50){
                 pw.println(getRandomValue());
+                System.out.print(getRandomValue());
                 i+=1;
             }
         } catch (FileNotFoundException e) {
