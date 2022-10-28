@@ -109,7 +109,7 @@ public class server {
 					System.out.println("User "+nuser+" already registered");
 					readOut.writeUTF("Server: "+nuser+" already registered");
 				}
-				readOut.writeUTF("Begin File Transfer");
+				readOut.writeUTF("Begin File Transfer\n");
 				serverskip csk= new serverskip();
 
 				//key exchanges
